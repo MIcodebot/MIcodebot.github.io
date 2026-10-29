@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIcodebot | Developer Full Stack & Data Scientist</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Inter + JetBrains Mono) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            cyan: '#06b6d4',
+                            blue: '#3b82f6',
+                            purple: '#8b5cf6',
+                            dark: '#0b0f19',
+                            card: '#111827',
+                            border: '#1f2937',
+                            accent: '#22d3ee'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Efeito Glow / Neon */
+        .glow-cyan {
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.25);
+        }
+        .glow-cyan-hover:hover {
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.45);
+        }
+        .glow-text-cyan {
+            text-shadow: 0 0 12px rgba(34, 211, 238, 0.5);
+        }
+
+        /* Gradientes e bordas glassmorphism */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card:hover {
+            border-color: rgba(6, 182, 212, 0.4);
+        }
+
+        /* Gradient Mask para títulos */
+        .gradient-text {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Animação suave para modal e notificações */
+        .toast-enter {
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(100%) scale(0.9); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-black">
+
+    <!-- Navbar Fixa -->
+    <nav class="fixed top-0 left-0 w-full z-50 glass-card border-b border-gray-800/80 px-4 lg:px-8 py-3.5 transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo / Brand -->
+            <a href="#home" class="flex items-center gap-3 group">
+                <div class="relative w-10 h-10 rounded-xl overflow-hidden border border-cyan-500/50 p-0.5 group-hover:border-cyan-400 transition-colors">
+                    <img src="https://github.com/MIcodebot.png" alt="MIcodebot" class="w-full h-full object-cover rounded-lg" onerror="this.src='https://placehold.co/100x100/0b0f19/06b6d4?text=MI'">
+                </div>
+                <div>
+                    <span class="font-mono font-bold text-lg text-white tracking-wide group-hover:text-cyan-400 transition-colors">MIcodebot</span>
+                    <span class="block text-[10px] text-gray-400 uppercase tracking-wider font-mono">Full Stack & Data</span>
+                </div>
+            </a>
+
+            <!-- Menu Desktop -->
+            <div class="hidden md:flex items-center gap-8 font-medium text-sm text-gray-300">
+                <a href="#sobre" class="hover:text-cyan-400 transition-colors">Sobre</a>
+                <a href="#skills" class="hover:text-cyan-400 transition-colors">Habilidades</a>
+                <a href="#projetos" class="hover:text-cyan-400 transition-colors">Projetos</a>
+                <a href="#orcamento" class="hover:text-cyan-400 transition-colors">Simular Orçamento</a>
+                <a href="#contato" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-xs"></i> Solicitar Projeto
+                </a>
+            </div>
+
+            <!-- Botão Menu Mobile -->
+            <button id="mobileMenuBtn" class="md:hidden text-gray-300 hover:text-white p-2 text-xl focus:outline-none" aria-label="Abrir menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Menu Mobile Expandido -->
+        <div id="mobileMenu" class="hidden md:hidden mt-4 pt-4 border-t border-gray-800 flex flex-col gap-4 text-center text-gray-300 pb-2">
+            <a href="#sobre" class="mobile-link py-2 hover:text-cyan-400 transition-colors">Sobre</a>
+            <a href="#skills" class="mobile-link py-2 hover:text-cyan-400 transition-colors">Habilidades</a>
+            <a href="#projetos" class="mobile-link py-2 hover:text-cyan-400 transition-colors">Projetos</a>
+            <a href="#orcamento" class="mobile-link py-2 hover:text-cyan-400 transition-colors">Simular Orçamento</a>
+            <a href="#contato" class="mobile-link py-2.5 bg-cyan-500 text-gray-950 font-bold rounded-lg flex items-center justify-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i> Fazer Pedido de Projeto
+            </a>
+        </div>
+    </nav>
+
+    <!-- Header / Hero Section -->
+    <section id="home" class="min-h-screen pt-28 pb-16 px-4 flex items-center relative overflow-hidden">
+        <!-- Background Orbs Animados -->
+        <div class="absolute top-1/4 -left-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-10 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+            <!-- Coluna de Texto -->
+            <div class="lg:col-span-7 text-center lg:text-left space-y-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 font-mono text-xs md:text-sm">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                    <span>Disponível para novos projetos e consultorias</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                    Olá, eu sou o <span class="gradient-text glow-text-cyan">MIcodebot</span>
+                </h1>
+
+                <!-- Título Solicitado -->
+                <p class="text-xl sm:text-2xl font-mono font-semibold text-cyan-400 flex items-center justify-center lg:justify-start gap-2">
+                    <i class="fa-solid fa-code text-cyan-500"></i>
+                    <span>Developer Full Stack & Data Scientist</span>
+                </p>
+
+                <p class="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                    Especialista no desenvolvimento de aplicações web modernas de alta performance, automações inteligentes, engenharia de dados e modelos de Machine Learning direcionados para soluções de alto impacto.
+                </p>
+
+                <!-- Ações Rápidas -->
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
+                    <a href="#contato" class="px-6 py-3.5 rounded-xl bg-cyan-500 text-gray-950 font-bold text-base hover:bg-cyan-400 transition-all glow-cyan glow-cyan-hover flex items-center gap-2 transform active:scale-95">
+                        <i class="fa-solid fa-briefcase"></i> Solicitar um Projeto
+                    </a>
+                    
+                    <a href="https://wa.me/5516993260487?text=Ol%C3%A1%2C%20gostaria%20de%20solicitar%20um%20or%C3%A7amento%20de%20projeto." target="_blank" rel="noopener" class="px-6 py-3.5 rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 font-semibold text-base hover:bg-emerald-600/30 transition-all flex items-center gap-2 hover:border-emerald-400">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> (16) 99326-0487
+                    </a>
+
+                    <a href="http://github.com/MIcodebot" target="_blank" rel="noopener" class="p-3.5 rounded-xl glass-card text-gray-300 hover:text-white hover:bg-gray-800 transition-all" title="Ver GitHub">
+                        <i class="fa-brands fa-github text-xl"></i>
+                    </a>
+                </div>
+
+                <!-- Estatísticas Rápidas -->
+                <div class="pt-8 grid grid-cols-3 gap-4 border-t border-gray-800/80 max-w-md mx-auto lg:mx-0">
+                    <div>
+                        <span class="block text-2xl font-bold font-mono text-white">100%</span>
+                        <span class="text-xs text-gray-400">Código Limpo</span>
+                    </div>
+                    <div>
+                        <span class="block text-2xl font-bold font-mono text-cyan-400">Full Stack</span>
+                        <span class="text-xs text-gray-400">Web & Mobile</span>
+                    </div>
+                    <div>
+                        <span class="block text-2xl font-bold font-mono text-purple-400">Data Science</span>
+                        <span class="text-xs text-gray-400">IA & Analytics</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna Avatar & Card Interativo -->
+            <div class="lg:col-span-5 flex justify-center">
+                <div class="relative group w-full max-w-sm">
+                    <!-- Glow de Fundo -->
+                    <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 rounded-2xl blur-lg opacity-40 group-hover:opacity-75 transition duration-500"></div>
+                    
+                    <div class="relative glass-card p-6 rounded-2xl border border-gray-700/60 text-center space-y-5">
+                        <div class="relative w-40 h-40 mx-auto rounded-2xl overflow-hidden border-2 border-cyan-400/80 shadow-xl">
+                            <img src="https://github.com/MIcodebot.png" alt="Avatar MIcodebot GitHub" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/300x300/111827/06b6d4?text=MIcodebot'">
+                            <div class="absolute bottom-2 right-2 bg-emerald-500 p-1.5 rounded-full border-2 border-gray-900" title="Online no WhatsApp"></div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-white">MIcodebot</h3>
+                            <p class="text-xs font-mono text-cyan-400 mt-1">github.com/MIcodebot</p>
+                        </div>
+
+                        <!-- Card de Contato Direto e Rápido -->
+                        <div class="bg-gray-900/90 rounded-xl p-3.5 text-left text-xs font-mono space-y-2 border border-gray-800">
+                            <div class="flex items-center gap-2 text-gray-300">
+                                <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
+                                <span class="text-gray-400">Wpp:</span>
+                                <a href="https://wa.me/5516993260487" target="_blank" class="text-emerald-400 hover:underline">16 993260487</a>
+                            </div>
+                            <div class="flex items-center gap-2 text-gray-300 truncate">
+                                <i class="fa-solid fa-envelope text-cyan-400 text-sm"></i>
+                                <span class="text-gray-400">Email:</span>
+                                <a href="mailto:poncianotech26@gmail.com" class="text-cyan-300 hover:underline truncate">poncianotech26@gmail.com</a>
+                            </div>
+                        </div>
+
+                        <a href="https://wa.me/5516993260487?text=Ol%C3%A1%2C%20vim%20pelo%20seu%20portf%C3%B3lio%20e%20gostaria%20de%20falar%20sobre%20um%20projeto." target="_blank" class="w-full py-2.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold text-sm hover:bg-emerald-500 hover:text-black transition-all flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-base"></i> Iniciar Chat no WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Sobre mim -->
+    <section id="sobre" class="py-20 px-4 bg-gray-950/50 border-y border-gray-800/60">
+        <div class="max-w-6xl mx-auto space-y-12">
+            <div class="text-center space-y-3">
+                <span class="text-cyan-400 font-mono text-sm tracking-wider uppercase">Conheça o Desenvolvedor</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Combinando Desenvolvimento Web & Inteligência de Dados</h2>
+                <div class="w-16 h-1 bg-cyan-500 mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4 text-gray-300 leading-relaxed font-light">
+                    <p>
+                        Atuo no ecossistema de tecnologia unindo duas das áreas mais requisitadas do mercado: **Desenvolvimento Full Stack** e **Ciência de Dados / Inteligência Artificial**.
+                    </p>
+                    <p>
+                        Como <strong class="text-cyan-300 font-normal">Full Stack Developer</strong>, construo plataformas completas, desde interfaces reativas e intuitivas até APIs robustas, microsserviços e bancos de dados seguros e escaláveis.
+                    </p>
+                    <p>
+                        Como <strong class="text-purple-300 font-normal">Data Scientist</strong>, aplico modelos preditivos, raspagem de dados (web scraping), análise estatística e algoritmos de Machine Learning para transformar dados brutos em inteligência acionável e decisões estratégicas de negócios.
+                    </p>
+                </div>
+
+                <!-- Destaques de Atuação -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="glass-card p-5 rounded-xl space-y-2 border-l-4 border-l-cyan-500">
+                        <i class="fa-solid fa-layer-group text-cyan-400 text-2xl"></i>
+                        <h4 class="font-bold text-white text-base">Aplicações Full Stack</h4>
+                        <p class="text-xs text-gray-400">Sistemas web modernos, dashboards e APIs RESTful/GraphQL.</p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-xl space-y-2 border-l-4 border-l-purple-500">
+                        <i class="fa-solid fa-brain text-purple-400 text-2xl"></i>
+                        <h4 class="font-bold text-white text-base">Data Science & IA</h4>
+                        <p class="text-xs text-gray-400">Machine Learning, Pandas, Scikit-learn e visões estatísticas.</p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-xl space-y-2 border-l-4 border-l-emerald-500">
+                        <i class="fa-solid fa-robot text-emerald-400 text-2xl"></i>
+                        <h4 class="font-bold text-white text-base">Automações & Bots</h4>
+                        <p class="text-xs text-gray-400">Bots para WhatsApp, rotinas de scraping e automação de processos.</p>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-xl space-y-2 border-l-4 border-l-blue-500">
+                        <i class="fa-solid fa-database text-blue-400 text-2xl"></i>
+                        <h4 class="font-bold text-white text-base">Arquitetura de Dados</h4>
+                        <p class="text-xs text-gray-400">Modelagem SQL, NoSQL, pipelines ETL e data warehousing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Habilidades / Stack -->
+    <section id="skills" class="py-20 px-4">
+        <div class="max-w-6xl mx-auto space-y-12">
+            <div class="text-center space-y-3">
+                <span class="text-cyan-400 font-mono text-sm tracking-wider uppercase">Tech Stack & Competências</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Tecnologias Dominadas</h2>
+                <p class="text-gray-400 max-w-xl mx-auto text-sm">Ferramentas de ponta utilizadas para criar produtos rápidos, modernos e orientados a dados.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Bloco Full Stack -->
+                <div class="glass-card p-6 md:p-8 rounded-2xl space-y-6">
+                    <div class="flex items-center gap-3 border-b border-gray-800 pb-4">
+                        <div class="p-3 bg-cyan-500/10 text-cyan-400 rounded-xl text-xl">
+                            <i class="fa-solid fa-code"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Desenvolvimento Full Stack & UI</h3>
+                            <p class="text-xs text-gray-400">Frontend, Backend, Design de Interfaces & Banco de Dados</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-cyan-500/50 transition-colors">
+                            <i class="fa-brands fa-js text-yellow-400 text-xl"></i>
+                            <span class="text-sm font-semibold text-white">JavaScript</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-cyan-500/50 transition-colors">
+                            <i class="fa-brands fa-java text-red-400 text-xl"></i>
+                            <span class="text-sm font-semibold text-white">Java</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-cyan-500/50 transition-colors">
+                            <i class="fa-solid fa-palette text-pink-400 text-xl"></i>
+                            <span class="text-sm font-semibold text-white">Design Interfaces Web</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-cyan-500/50 transition-colors">
+                            <i class="fa-brands fa-react text-cyan-400 text-xl"></i>
+                            <span class="text-sm text-gray-200">React / Next</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-cyan-500/50 transition-colors">
+                            <i class="fa-brands fa-node-js text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-gray-200">Node.js</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-cyan-500/50 transition-colors">
+                            <i class="fa-solid fa-database text-purple-400 text-xl"></i>
+                            <span class="text-sm text-gray-200">SQL / PostgreSQL</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-cyan-500/50 transition-colors">
+                            <i class="fa-brands fa-html5 text-orange-500 text-xl"></i>
+                            <span class="text-sm text-gray-200">HTML5 / CSS3</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-cyan-500/50 transition-colors">
+                            <i class="fa-brands fa-git-alt text-red-500 text-xl"></i>
+                            <span class="text-sm text-gray-200">Git / GitHub</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-cyan-500/50 transition-colors">
+                            <i class="fa-solid fa-bolt text-yellow-300 text-xl"></i>
+                            <span class="text-sm text-gray-200">APIs RESTful</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloco Data Science -->
+                <div class="glass-card p-6 md:p-8 rounded-2xl space-y-6">
+                    <div class="flex items-center gap-3 border-b border-gray-800 pb-4">
+                        <div class="p-3 bg-purple-500/10 text-purple-400 rounded-xl text-xl">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Data Science & Analytics</h3>
+                            <p class="text-xs text-gray-400">Python, Análise de Dados, ML & Automações</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-purple-500/50 transition-colors">
+                            <i class="fa-brands fa-python text-blue-400 text-xl"></i>
+                            <span class="text-sm font-semibold text-white">Python</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-purple-500/50 transition-colors">
+                            <i class="fa-solid fa-table text-blue-400 text-xl"></i>
+                            <span class="text-sm text-gray-200">Pandas / NumPy</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-purple-500/50 transition-colors">
+                            <i class="fa-solid fa-brain text-purple-400 text-xl"></i>
+                            <span class="text-sm text-gray-200">Machine Learning</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-purple-500/50 transition-colors">
+                            <i class="fa-solid fa-chart-pie text-pink-400 text-xl"></i>
+                            <span class="text-sm text-gray-200">Data Viz / Seaborn</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-purple-500/50 transition-colors">
+                            <i class="fa-solid fa-spider text-red-400 text-xl"></i>
+                            <span class="text-sm text-gray-200">Web Scraping</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-purple-500/50 transition-colors">
+                            <i class="fa-solid fa-robot text-emerald-400 text-xl"></i>
+                            <span class="text-sm text-gray-200">Integração LLM / IA</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-purple-500/50 transition-colors">
+                            <i class="fa-solid fa-gears text-amber-400 text-xl"></i>
+                            <span class="text-sm text-gray-200">ETL Pipelines</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-purple-500/50 transition-colors">
+                            <i class="fa-solid fa-square-root-variable text-cyan-400 text-xl"></i>
+                            <span class="text-sm text-gray-200">Estatística</span>
+                        </div>
+                        <div class="p-3 bg-gray-900/80 rounded-xl border border-gray-800 flex items-center gap-2.5 hover:border-purple-500/50 transition-colors">
+                            <i class="fa-solid fa-book-open text-orange-400 text-xl"></i>
+                            <span class="text-sm text-gray-200">Jupyter Lab</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção de Projetos em Destaque -->
+    <section id="projetos" class="py-20 px-4 bg-gray-950/40 border-t border-gray-800/60">
+        <div class="max-w-6xl mx-auto space-y-12">
+            <div class="text-center space-y-3">
+                <span class="text-cyan-400 font-mono text-sm tracking-wider uppercase">Repositórios & Trabalhos</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Projetos em Destaque</h2>
+                <p class="text-gray-400 max-w-xl mx-auto text-sm">Acesse diretamente os códigos e repositórios hospedados no GitHub.</p>
+
+                <!-- Filtros Interativos -->
+                <div class="flex flex-wrap justify-center gap-2 pt-4">
+                    <button onclick="filterProjects('todos')" class="filter-btn active-filter px-4 py-2 rounded-xl text-xs font-mono font-semibold bg-cyan-500 text-gray-950 transition-all">Todos</button>
+                    <button onclick="filterProjects('fullstack')" class="filter-btn px-4 py-2 rounded-xl text-xs font-mono font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition-all">Full Stack</button>
+                    <button onclick="filterProjects('datascience')" class="filter-btn px-4 py-2 rounded-xl text-xs font-mono font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition-all">Data Science</button>
+                    <button onclick="filterProjects('automacao')" class="filter-btn px-4 py-2 rounded-xl text-xs font-mono font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition-all">Automação & Bots</button>
+                </div>
+            </div>
+
+            <!-- Grid de Cards de Projetos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="projectsGrid">
+                
+                <!-- Card 1: Projeto Full Stack - Catálogo Aromae -->
+                <div class="project-card glass-card rounded-2xl p-6 flex flex-col justify-between hover:-translate-y-1.5 transition-all duration-300 border border-gray-800" data-category="fullstack">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-md bg-cyan-500/10 text-cyan-400 text-[11px] font-mono border border-cyan-500/20">Full Stack</span>
+                            <i class="fa-brands fa-github text-gray-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors">catalogo-aromae</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">
+                            Aplicação web para catálogo de produtos interativo com design moderno, experiência do usuário fluida e estrutura responsiva.
+                        </p>
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            <span class="text-[10px] font-mono bg-gray-900 text-gray-300 px-2 py-0.5 rounded border border-gray-800">JavaScript</span>
+                            <span class="text-[10px] font-mono bg-gray-900 text-gray-300 px-2 py-0.5 rounded border border-gray-800">UI/UX Design</span>
+                            <span class="text-[10px] font-mono bg-gray-900 text-gray-300 px-2 py-0.5 rounded border border-gray-800">HTML5/CSS3</span>
+                        </div>
+                    </div>
+                    <div class="pt-6 mt-4 border-t border-gray-800/80 flex items-center justify-between">
+                        <a href="https://github.com/MIcodebot/catalogo-aromae" target="_blank" rel="noopener" class="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5">
+                            <span>Ver Repositório</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                        <span class="text-[10px] font-mono text-gray-500">Full Stack</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Projeto Data Science - Desempenho Atletas Doenças -->
+                <div class="project-card glass-card rounded-2xl p-6 flex flex-col justify-between hover:-translate-y-1.5 transition-all duration-300 border border-gray-800" data-category="datascience">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-md bg-purple-500/10 text-purple-400 text-[11px] font-mono border border-purple-500/20">Data Science</span>
+                            <i class="fa-brands fa-python text-gray-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">desempenho-atletas-doencas</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">
+                            Análise estatística e modelagem de dados focada na correlação entre desempenho atlético e impactos de condições fisiológicas/doenças.
+                        </p>
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            <span class="text-[10px] font-mono bg-gray-900 text-gray-300 px-2 py-0.5 rounded border border-gray-800">Python</span>
+                            <span class="text-[10px] font-mono bg-gray-900 text-gray-300 px-2 py-0.5 rounded border border-gray-800">Data Analytics</span>
+                            <span class="text-[10px] font-mono bg-gray-900 text-gray-300 px-2 py-0.5 rounded border border-gray-800">Estatística</span>
+                        </div>
+                    </div>
+                    <div class="pt-6 mt-4 border-t border-gray-800/80 flex items-center justify-between">
+                        <a href="https://github.com/MIcodebot/desempenho-atletas-doencas" target="_blank" rel="noopener" class="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5">
+                            <span>Ver Repositório</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                        <span class="text-[10px] font-mono text-gray-500">Data Science</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Automação / Bot WhatsApp & Scraping (Mantido) -->
+                <div class="project-card glass-card rounded-2xl p-6 flex flex-col justify-between hover:-translate-y-1.5 transition-all duration-300 border border-gray-800" data-category="automacao">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-[11px] font-mono border border-emerald-500/20">Automação</span>
+                            <i class="fa-solid fa-robot text-gray-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Automations & Web Scrapers</h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">
+                            Scripts automatizados para captura de dados na web, disparo de notificações e automação de atendimento via WhatsApp.
+                        </p>
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            <span class="text-[10px] font-mono bg-gray-900 text-gray-300 px-2 py-0.5 rounded border border-gray-800">Node.js</span>
+                            <span class="text-[10px] font-mono bg-gray-900 text-gray-300 px-2 py-0.5 rounded border border-gray-800">Python</span>
+                            <span class="text-[10px] font-mono bg-gray-900 text-gray-300 px-2 py-0.5 rounded border border-gray-800">Bot API</span>
+                        </div>
+                    </div>
+                    <div class="pt-6 mt-4 border-t border-gray-800/80 flex items-center justify-between">
+                        <a href="https://github.com/MIcodebot" target="_blank" rel="noopener" class="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5">
+                            <span>Explorar Repositórios</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                        <span class="text-[10px] font-mono text-gray-500">Automation</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CTA GitHub -->
+            <div class="text-center pt-6">
+                <a href="http://github.com/MIcodebot" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-900 border border-gray-700 text-white font-medium hover:border-cyan-500 hover:text-cyan-400 transition-all">
+                    <i class="fa-brands fa-github text-xl"></i>
+                    <span>Ver todos os repositórios no GitHub (MIcodebot)</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção: Simular Orçamento Interativo -->
+    <section id="orcamento" class="py-20 px-4 bg-gray-900/30">
+        <div class="max-w-4xl mx-auto space-y-10">
+            <div class="text-center space-y-3">
+                <span class="text-cyan-400 font-mono text-sm tracking-wider uppercase">Calculadora Rápida</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Simulador Estimativo de Projeto</h2>
+                <p class="text-gray-400 text-sm">Selecione o tipo de projeto e funcionalidades para obter uma estimativa rápida de prazo e escopo.</p>
+            </div>
+
+            <div class="glass-card p-6 md:p-8 rounded-2xl border border-gray-800 space-y-6">
+                <!-- Tipo de Projeto -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-200 mb-3">1. Qual o tipo principal do seu projeto?</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <label class="cursor-pointer border border-gray-800 bg-gray-900 p-4 rounded-xl flex flex-col items-center gap-2 text-center hover:border-cyan-500 transition-all has-[:checked]:border-cyan-500 has-[:checked]:bg-cyan-950/40">
+                            <input type="radio" name="sim_tipo" value="Website / Landpage" class="sr-only" checked onchange="calcEstimativa()">
+                            <i class="fa-solid fa-laptop-code text-cyan-400 text-2xl"></i>
+                            <span class="text-sm font-medium text-white">Website / Landing Page</span>
+                        </label>
+                        <label class="cursor-pointer border border-gray-800 bg-gray-900 p-4 rounded-xl flex flex-col items-center gap-2 text-center hover:border-cyan-500 transition-all has-[:checked]:border-cyan-500 has-[:checked]:bg-cyan-950/40">
+                            <input type="radio" name="sim_tipo" value="Sistema Full Stack Complete" class="sr-only" onchange="calcEstimativa()">
+                            <i class="fa-solid fa-server text-purple-400 text-2xl"></i>
+                            <span class="text-sm font-medium text-white">Sistema Full Stack</span>
+                        </label>
+                        <label class="cursor-pointer border border-gray-800 bg-gray-900 p-4 rounded-xl flex flex-col items-center gap-2 text-center hover:border-cyan-500 transition-all has-[:checked]:border-cyan-500 has-[:checked]:bg-cyan-950/40">
+                            <input type="radio" name="sim_tipo" value="Análise de Dados / IA / Bot" class="sr-only" onchange="calcEstimativa()">
+                            <i class="fa-solid fa-robot text-emerald-400 text-2xl"></i>
+                            <span class="text-sm font-medium text-white">Data Science / Bot</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Recursos Opcionais -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-200 mb-3">2. Recursos Adicionais Solicitados:</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        <label class="flex items-center gap-3 p-3 bg-gray-900 rounded-xl border border-gray-800 cursor-pointer hover:border-gray-700">
+                            <input type="checkbox" id="rec_auth" class="w-4 h-4 rounded accent-cyan-500" onchange="calcEstimativa()">
+                            <span class="text-gray-300">Autenticação de Usuários & Login</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 bg-gray-900 rounded-xl border border-gray-800 cursor-pointer hover:border-gray-700">
+                            <input type="checkbox" id="rec_pag" class="w-4 h-4 rounded accent-cyan-500" onchange="calcEstimativa()">
+                            <span class="text-gray-300">Integração de Pagamentos (Pix/Cartão)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 bg-gray-900 rounded-xl border border-gray-800 cursor-pointer hover:border-gray-700">
+                            <input type="checkbox" id="rec_dash" class="w-4 h-4 rounded accent-cyan-500" onchange="calcEstimativa()">
+                            <span class="text-gray-300">Dashboard de Gráficos & Analytics</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 bg-gray-900 rounded-xl border border-gray-800 cursor-pointer hover:border-gray-700">
+                            <input type="checkbox" id="rec_ia" class="w-4 h-4 rounded accent-cyan-500" onchange="calcEstimativa()">
+                            <span class="text-gray-300">Integração de IA (ChatGPT/OpenAI)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Resultado Estimado -->
+                <div class="p-5 bg-cyan-950/40 border border-cyan-500/30 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-mono text-cyan-400 block">Estimativa Aproximada de Prazo:</span>
+                        <span id="prazoEstimado" class="text-xl font-bold text-white">5 a 10 dias úteis</span>
+                    </div>
+                    <button onclick="copiarEstimativaParaContato()" class="px-5 py-2.5 rounded-lg bg-cyan-500 text-gray-950 font-bold text-xs hover:bg-cyan-400 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-down"></i> Usar esta Estimativa no Formulário
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção DEDICADA DE CONTATO E SOLICITAÇÃO DE PROJETO -->
+    <section id="contato" class="py-20 px-4 relative">
+        <div class="max-w-6xl mx-auto space-y-12">
+            
+            <div class="text-center space-y-3">
+                <span class="text-cyan-400 font-mono text-sm tracking-wider uppercase">Fale Conosco / Contrate</span>
+                <h2 class="text-3xl md:text-5xl font-extrabold text-white">Solicite seu Projeto</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto text-base">
+                    Precisa de um site, aplicação Full Stack, modelo de Data Science ou automação inteligente? Entre em contato direto pelo formulário ou atalhos abaixo.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Coluna de Canais de Contato Direto -->
+                <div class="lg:col-span-5 space-y-6">
+                    
+                    <div class="glass-card p-6 rounded-2xl border border-gray-800 space-y-6">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-comments text-cyan-400"></i> Canais Diretos
+                        </h3>
+
+                        <!-- Card WhatsApp Solicitado -->
+                        <div class="p-4 bg-emerald-950/30 border border-emerald-500/40 rounded-xl space-y-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-emerald-300 font-mono block">WhatsApp Direto:</span>
+                                    <strong class="text-white text-base font-mono">(16) 99326-0487</strong>
+                                </div>
+                            </div>
+                            <a href="https://wa.me/5516993260487?text=Ol%C3%A1%2C%20gostaria%20de%20solicitar%20um%20or%C3%A7amento%20de%20projeto." target="_blank" rel="noopener" class="w-full py-2.5 px-4 rounded-lg bg-emerald-500 text-gray-950 font-bold text-sm hover:bg-emerald-400 transition-all flex items-center justify-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-lg"></i> Abrir WhatsApp Agora
+                            </a>
+                        </div>
+
+                        <!-- Card E-mail Solicitado -->
+                        <div class="p-4 bg-cyan-950/30 border border-cyan-500/40 rounded-xl space-y-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <span class="text-xs text-cyan-300 font-mono block">E-mail Profissional:</span>
+                                    <strong class="text-white text-sm md:text-base font-mono block truncate">poncianotech26@gmail.com</strong>
+                                </div>
+                            </div>
+                            <a href="mailto:poncianotech26@gmail.com" class="w-full py-2.5 px-4 rounded-lg bg-cyan-500 text-gray-950 font-bold text-sm hover:bg-cyan-400 transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-paper-plane text-sm"></i> Enviar E-mail Direto
+                            </a>
+                        </div>
+
+                        <!-- GitHub Profile Link -->
+                        <div class="p-4 bg-gray-900 border border-gray-800 rounded-xl flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-brands fa-github text-2xl text-gray-300"></i>
+                                <div>
+                                    <span class="text-xs text-gray-400 block">GitHub Profile</span>
+                                    <span class="text-sm font-bold text-white font-mono">MIcodebot</span>
+                                </div>
+                            </div>
+                            <a href="http://github.com/MIcodebot" target="_blank" class="text-cyan-400 hover:underline text-xs font-semibold">Acessar <i class="fa-solid fa-external-link-alt"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Garantia de Entrega -->
+                    <div class="p-5 bg-gray-950 rounded-2xl border border-gray-800 space-y-2 text-xs text-gray-400">
+                        <div class="flex items-center gap-2 text-cyan-400 font-bold text-sm">
+                            <i class="fa-solid fa-shield-halved"></i> Compromisso Profissional
+                        </div>
+                        <p>Atendimento personalizado, código documentado, boas práticas de segurança e suporte pós-entrega.</p>
+                    </div>
+
+                </div>
+
+                <!-- Form de Solicitação do Projeto -->
+                <div class="lg:col-span-7">
+                    <form id="projectForm" onsubmit="enviarSolicitacao(event)" class="glass-card p-6 md:p-8 rounded-2xl border border-gray-800 space-y-5">
+                        <h3 class="text-xl font-bold text-white mb-2">Formulário de Solicitação de Projeto</h3>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="nome" class="block text-xs font-mono text-gray-300 mb-1.5">Seu Nome / Empresa *</label>
+                                <input type="text" id="nome" required placeholder="Ex: João Silva" class="w-full bg-gray-900 border border-gray-700 focus:border-cyan-500 rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-xs font-mono text-gray-300 mb-1.5">Seu E-mail de Contato *</label>
+                                <input type="email" id="email" required placeholder="seuemail@exemplo.com" class="w-full bg-gray-900 border border-gray-700 focus:border-cyan-500 rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="whatsapp" class="block text-xs font-mono text-gray-300 mb-1.5">WhatsApp / Telefone *</label>
+                                <input type="tel" id="whatsapp" required placeholder="(16) 99999-9999" class="w-full bg-gray-900 border border-gray-700 focus:border-cyan-500 rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors">
+                            </div>
+                            <div>
+                                <label for="tipoProjeto" class="block text-xs font-mono text-gray-300 mb-1.5">Tipo de Projeto *</label>
+                                <select id="tipoProjeto" required class="w-full bg-gray-900 border border-gray-700 focus:border-cyan-500 rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors">
+                                    <option value="Desenvolvimento Full Stack Web">Desenvolvimento Full Stack Web</option>
+                                    <option value="Análise de Dados / Data Science">Análise de Dados / Data Science</option>
+                                    <option value="Automação / Web Scraping / Bots">Automação / Web Scraping / Bots</option>
+                                    <option value="Landing Page / Site Institucional">Landing Page / Site Institucional</option>
+                                    <option value="Consultoria Técnica / Outros">Consultoria Técnica / Outros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="orcamentoEstimado" class="block text-xs font-mono text-gray-300 mb-1.5">Orçamento Estimado (Opcional)</label>
+                            <select id="orcamentoEstimado" class="w-full bg-gray-900 border border-gray-700 focus:border-cyan-500 rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors">
+                                <option value="A definir / Sob consulta">A definir / Sob consulta</option>
+                                <option value="R$ 500 a R$ 1.500">R$ 500 a R$ 1.500</option>
+                                <option value="R$ 1.500 a R$ 3.500">R$ 1.500 a R$ 3.500</option>
+                                <option value="R$ 3.500 a R$ 7.000">R$ 3.500 a R$ 7.000</option>
+                                <option value="Acima de R$ 7.000">Acima de R$ 7.000</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="mensagem" class="block text-xs font-mono text-gray-300 mb-1.5">Descrição do Projeto ou Necessidade *</label>
+                            <textarea id="mensagem" rows="4" required placeholder="Descreva brevemente o que você deseja criar, funcionalidades desejadas e prazos..." class="w-full bg-gray-900 border border-gray-700 focus:border-cyan-500 rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors"></textarea>
+                        </div>
+
+                        <!-- Opções de Envio -->
+                        <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                            <button type="submit" class="flex-1 py-3.5 px-6 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-gray-950 font-bold text-sm transition-all flex items-center justify-center gap-2 glow-cyan">
+                                <i class="fa-solid fa-paper-plane"></i> Enviar Pedido via WhatsApp
+                            </button>
+                            <button type="button" onclick="enviarViaEmail()" class="py-3.5 px-6 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-semibold text-sm transition-all border border-gray-700 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-envelope"></i> Enviar via E-mail
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-950 border-t border-gray-800/80 py-10 px-4 text-center">
+        <div class="max-w-6xl mx-auto space-y-4">
+            <div class="flex items-center justify-center gap-3">
+                <img src="https://github.com/MIcodebot.png" alt="MIcodebot" class="w-8 h-8 rounded-lg border border-cyan-500" onerror="this.style.display='none'">
+                <span class="font-mono font-bold text-white text-lg">MIcodebot</span>
+            </div>
+            <p class="text-xs text-gray-400">Developer Full Stack & Data Scientist</p>
+            <div class="flex justify-center gap-6 text-sm text-gray-400 pt-2">
+                <a href="https://wa.me/5516993260487" target="_blank" class="hover:text-emerald-400 transition-colors"><i class="fa-brands fa-whatsapp"></i> (16) 99326-0487</a>
+                <a href="mailto:poncianotech26@gmail.com" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-envelope"></i> poncianotech26@gmail.com</a>
+                <a href="http://github.com/MIcodebot" target="_blank" class="hover:text-white transition-colors"><i class="fa-brands fa-github"></i> GitHub</a>
+            </div>
+            <p class="text-[11px] text-gray-600 pt-4 border-t border-gray-900">&copy; 2026 MIcodebot. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Elemento Toast de Notificação -->
+    <div id="toast" class="hidden fixed bottom-6 right-6 z-50 glass-card p-4 rounded-xl border border-cyan-500/50 shadow-2xl text-sm text-white flex items-center gap-3 toast-enter">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-xl"></i>
+        <span id="toastMsg">Mensagem enviada com sucesso!</span>
+    </div>
+
+    <!-- Scripts da Aplicação -->
+    <script>
+        // Toggle do Menu Mobile
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Filtragem de Projetos
+        function filterProjects(category) {
+            const cards = document.querySelectorAll('.project-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-cyan-500', 'text-gray-950');
+                btn.classList.add('bg-gray-800', 'text-gray-300');
+            });
+
+            event.target.classList.remove('bg-gray-800', 'text-gray-300');
+            event.target.classList.add('bg-cyan-500', 'text-gray-950');
+
+            cards.forEach(card => {
+                if (category === 'todos' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Calculadora / Estimativa de Projeto
+        function calcEstimativa() {
+            const tipo = document.querySelector('input[name="sim_tipo"]:checked').value;
+            const auth = document.getElementById('rec_auth').checked;
+            const pag = document.getElementById('rec_pag').checked;
+            const dash = document.getElementById('rec_dash').checked;
+            const ia = document.getElementById('rec_ia').checked;
+
+            let diasBase = 5;
+
+            if (tipo.includes('Full Stack')) diasBase = 12;
+            if (tipo.includes('Data Science')) diasBase = 8;
+
+            if (auth) diasBase += 3;
+            if (pag) diasBase += 3;
+            if (dash) diasBase += 4;
+            if (ia) diasBase += 4;
+
+            document.getElementById('prazoEstimado').innerText = `${diasBase} a ${diasBase + 5} dias úteis`;
+        }
+
+        function copiarEstimativaParaContato() {
+            const tipo = document.querySelector('input[name="sim_tipo"]:checked').value;
+            const prazo = document.getElementById('prazoEstimado').innerText;
+
+            document.getElementById('tipoProjeto').value = tipo.includes('Full Stack') ? 'Desenvolvimento Full Stack Web' : 
+                                                          tipo.includes('Data') ? 'Análise de Dados / Data Science' : 'Landing Page / Site Institucional';
+            
+            document.getElementById('mensagem').value = `Solicitação com base na estimativa:\n- Tipo: ${tipo}\n- Prazo estimado desejado: ${prazo}\n- Detalhes do projeto: `;
+
+            // Scroll suave até o formulário
+            document.getElementById('contato').scrollIntoView({ behavior: 'smooth' });
+            showToast('Estimativa carregada no formulário!');
+        }
+
+        // Envio do Formulário direcionando para o WhatsApp com os campos formatados
+        function enviarSolicitacao(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const whatsapp = document.getElementById('whatsapp').value;
+            const tipo = document.getElementById('tipoProjeto').value;
+            const orcamento = document.getElementById('orcamentoEstimado').value;
+            const mensagem = document.getElementById('mensagem').value;
+
+            const textoMsg = `*Nova Solicitação de Projeto (Portfólio)*\n\n` +
+                             `👤 *Nome:* ${nome}\n` +
+                             `📧 *E-mail:* ${email}\n` +
+                             `📱 *WhatsApp:* ${whatsapp}\n` +
+                             `💻 *Tipo de Projeto:* ${tipo}\n` +
+                             `💰 *Orçamento:* ${orcamento}\n\n` +
+                             `📝 *Descrição:* ${mensagem}`;
+
+            const urlWpp = `https://wa.me/5516993260487?text=${encodeURIComponent(textoMsg)}`;
+            
+            window.open(urlWpp, '_blank');
+            showToast('Redirecionando para o WhatsApp...');
+        }
+
+        // Envio via E-mail acionando mailto
+        function enviarViaEmail() {
+            const nome = document.getElementById('nome').value || 'Cliente';
+            const email = document.getElementById('email').value || 'Não informado';
+            const tipo = document.getElementById('tipoProjeto').value;
+            const mensagem = document.getElementById('mensagem').value || 'Sem mensagem';
+
+            const assunto = `Solicitação de Projeto: ${tipo} - ${nome}`;
+            const corpo = `Nome: ${nome}\nEmail: ${email}\nTipo: ${tipo}\n\nMensagem:\n${mensagem}`;
+
+            const mailtoUrl = `mailto:poncianotech26@gmail.com?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+            window.location.href = mailtoUrl;
+        }
+
+        // Sistema Toast
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = msg;
+            toast.classList.remove('hidden');
+
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
